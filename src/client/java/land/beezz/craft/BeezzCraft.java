@@ -3,6 +3,7 @@ package land.beezz.craft;
 import land.beezz.craft.mixin.AbstractContainerScreenAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -10,6 +11,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -36,9 +38,12 @@ public final class BeezzCraft implements ClientModInitializer {
     public static final Logger LOG = LoggerFactory.getLogger("BeezzCraft");
     /** The wheel that is open right now (one at a time), or null. */
     static Wheel wheel;
+    /** Held with a right click on an item to open the wheel; Left Alt by default, rebindable in Controls. */
+    public static KeyMapping wheelKey;
 
     @Override
     public void onInitializeClient() {
+        wheelKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.beezzcraft.wheel", InputConstants.KEY_LALT, KeyMapping.Category.register(Identifier.fromNamespaceAndPath("beezzcraft", "main"))));
         ScreenEvents.AFTER_INIT.register((mc, screen, w, h) -> {
             if (!(screen instanceof InventoryScreen) && !(screen instanceof CraftingScreen)) return;
             AbstractContainerScreen<?> cs = (AbstractContainerScreen<?>) screen;
@@ -46,7 +51,7 @@ public final class BeezzCraft implements ClientModInitializer {
             ScreenMouseEvents.allowMouseClick(screen).register((s, e) -> {
                 // the click's own modifier flags, or the keys held right now (some inputs don't fill the flags)
                 Minecraft mc2 = Minecraft.getInstance();
-                return mouse(cs, e.x(), e.y(), e.button(), e.hasAltDown() || mc2.hasAltDown(),
+                return mouse(cs, e.x(), e.y(), e.button(), wheelKeyDown(mc2, e.hasAltDown()),
                         e.hasShiftDown() || mc2.hasShiftDown(), e.hasControlDown() || mc2.hasControlDown());
             });
             ScreenMouseEvents.allowMouseRelease(screen).register((s, e) -> wheel == null);
@@ -78,7 +83,7 @@ public final class BeezzCraft implements ClientModInitializer {
         });
         HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("beezzcraft", "queue"), (g, delta) -> hud(g));
         Config.get();
-        LOG.info("BeezzCraft ready: Alt + right click on an item in the inventory or at a crafting table");
+        LOG.info("BeezzCraft ready: wheel key (Alt by default) + right click on an item in the inventory or at a crafting table");
     }
 
     /** Called by ScreenMixin after the screen and before its tooltips. */
@@ -91,6 +96,40 @@ public final class BeezzCraft implements ClientModInitializer {
 
     public static boolean wheelOpenOn(Object screen) {
         return wheel != null && wheel.screen == screen;
+    }
+
+    /**
+     * Is the wheel key held? An Alt binding takes either Alt (and the click's own Alt flag); any other key is read from
+     * the keyboard, a mouse button from the mouse. Unbound means the wheel never opens.
+     */
+    static boolean wheelKeyDown(Minecraft mc, boolean altFlag) {
+        InputConstants.Key key = KeyMappingHelper.getBoundKeyOf(wheelKey);
+        int code = key.getValue();
+        if (key.getType() == InputConstants.Type.MOUSE) return wheelKey.isDown();
+        if (code == InputConstants.KEY_LALT || code == InputConstants.KEY_RALT) return altFlag || mc.hasAltDown();
+        return code != InputConstants.UNKNOWN.getValue() && keyDown(mc, code);
+    }
+
+    private static java.lang.invoke.MethodHandle keyDownHandle;
+
+    /** InputConstants.isKeyDown: (int) on 26.3, (Window, int) before; found once at run time. */
+    private static boolean keyDown(Minecraft mc, int code) {
+        try {
+            if (keyDownHandle == null) {
+                var lookup = java.lang.invoke.MethodHandles.publicLookup();
+                var type = java.lang.invoke.MethodType.methodType(boolean.class, int.class);
+                try {
+                    keyDownHandle = lookup.findStatic(InputConstants.class, "isKeyDown", type);
+                } catch (NoSuchMethodException e) {
+                    var window = com.mojang.blaze3d.platform.Window.class;
+                    keyDownHandle = lookup.findStatic(InputConstants.class, "isKeyDown", type.insertParameterTypes(0, window));
+                    keyDownHandle = java.lang.invoke.MethodHandles.insertArguments(keyDownHandle, 0, mc.getWindow());
+                }
+            }
+            return (boolean) keyDownHandle.invoke(code);
+        } catch (Throwable t) {
+            throw new IllegalStateException("BeezzCraft: cannot read the keyboard", t);
+        }
     }
 
     /** @return true to let the screen handle the click as usual */

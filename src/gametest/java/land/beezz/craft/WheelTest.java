@@ -141,6 +141,24 @@ public class WheelTest implements FabricClientGameTest {
             // 1) the wheel in the inventory: 2x2 recipes from planks
             ctx.setScreen(() -> new InventoryScreen(Minecraft.getInstance().player));
             ctx.waitForScreen(InventoryScreen.class);
+            // 0) the wheel key can be rebound in Controls: V + right click opens it, then back to Alt
+            ctx.runOnClient(mc -> {
+                BeezzCraft.wheelKey.setKey(InputConstants.getKey("key.keyboard.v"));
+                net.minecraft.client.KeyMapping.resetMapping();
+            });
+            double[] plankSlot = slotOf(Items.OAK_PLANKS);
+            cursor(plankSlot[0], plankSlot[1]);
+            ctx.getInput().holdKey(InputConstants.KEY_V);
+            ctx.getInput().pressMouse(RIGHT);
+            ctx.getInput().releaseKey(InputConstants.KEY_V);
+            ctx.waitTicks(5);
+            check("a rebound wheel key (V) + right click opens the wheel", ctx.computeOnClient(mc -> BeezzCraft.wheel != null));
+            ctx.getInput().pressKey(InputConstants.KEY_ESCAPE);
+            ctx.waitTicks(3);
+            ctx.runOnClient(mc -> {
+                BeezzCraft.wheelKey.setKey(BeezzCraft.wheelKey.getDefaultKey());
+                net.minecraft.client.KeyMapping.resetMapping();
+            });
             wheelOn(Items.OAK_PLANKS);
             shot("craft_01_inventory_wheel");
             double[] table = sectorOf(Items.CRAFTING_TABLE);

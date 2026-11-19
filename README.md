@@ -9,9 +9,9 @@
 
 | Minecraft | Файл |
 |---|---|
-| 26.3 | [beezzcraft-1.0.0+26.3.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.0/beezzcraft-1.0.0+26.3.jar) |
-| 26.2 | [beezzcraft-1.0.0+26.2.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.0/beezzcraft-1.0.0+26.2.jar) |
-| 26.1 – 26.1.2 | [beezzcraft-1.0.0+26.1.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.0/beezzcraft-1.0.0+26.1.jar) |
+| 26.3 | [beezzcraft-1.0.1+26.3.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.1/beezzcraft-1.0.1+26.3.jar) |
+| 26.2 | [beezzcraft-1.0.1+26.2.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.1/beezzcraft-1.0.1+26.2.jar) |
+| 26.1 – 26.1.2 | [beezzcraft-1.0.1+26.1.jar](https://github.com/erkinpaw/beezzcraft/releases/download/v1.0.1/beezzcraft-1.0.1+26.1.jar) |
 
 Все версии — на странице [Releases](https://github.com/erkinpaw/beezzcraft/releases) и на сайте
 [beezzland.com](https://beezzland.com/ai-mods/beezzcraft-koleso-krafta.html).
@@ -22,7 +22,7 @@
 
 ## Что умеет
 
-- **Alt + ПКМ** по предмету в инвентаре (рецепты 2×2) или у верстака (3×3) — колесо всего, что из него делается.
+- **Alt + ПКМ** по предмету в инвентаре (рецепты 2×2) или у верстака (3×3) — колесо всего, что из него делается. Alt можно сменить: **Настройки → Управление → Привязки клавиш → BeezzCraft**.
   Золотые кнопки — хватает ресурсов, серые — чего-то не хватает.
 - **ЛКМ** — скрафтить 1 раз, **Ctrl** — ×10, **Shift** — сколько хватит ресурсов.
 - **Колёсико мыши** — варианты одной вещи: заборы из разного дерева, факел / факел душ / медный факел, уровни инструментов.
@@ -43,7 +43,7 @@
 
 ## English
 
-Fabric client mod for Minecraft **26.1 – 26.3**: **Alt + right click** on an item in the inventory or at a crafting table opens
+Fabric client mod for Minecraft **26.1 – 26.3**: **Alt + right click** (the key is rebindable in Options → Controls → Key Binds → BeezzCraft) on an item in the inventory or at a crafting table opens
 an octagon wheel of everything you can craft from it.
 
 - **Inner ring**: what you can craft right now. **Grey**: missing resources.

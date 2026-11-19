@@ -30,5 +30,7 @@
   "beezzcraft.card.variant": "вариант %s/%s",
   "beezzcraft.set.needs": "Нужные ресурсы",
   "beezzcraft.needs.title": "Нужно добыть",
-  "beezzcraft.needs.ok": "Всё есть — можно крафтить"
+  "beezzcraft.needs.ok": "Всё есть — можно крафтить",
+  "key.beezzcraft.wheel": "Колесо крафта (+ ПКМ по предмету)",
+  "key.category.beezzcraft.main": "BeezzCraft"
 }

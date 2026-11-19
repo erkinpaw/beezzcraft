@@ -30,5 +30,7 @@
   "beezzcraft.card.variant": "variant %s/%s",
   "beezzcraft.set.needs": "Resources to get",
   "beezzcraft.needs.title": "To get",
-  "beezzcraft.needs.ok": "You have everything"
+  "beezzcraft.needs.ok": "You have everything",
+  "key.beezzcraft.wheel": "Open the crafting wheel (+ right click)",
+  "key.category.beezzcraft.main": "BeezzCraft"
 }

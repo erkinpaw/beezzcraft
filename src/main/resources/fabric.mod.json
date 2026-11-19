@@ -3,7 +3,7 @@
   "id": "beezzcraft",
   "version": "${version}",
   "name": "BeezzCraft",
-  "description": "Alt + right click on an item: an octagon wheel of everything you can craft from it. Grey means missing resources; hover for the recipe, click to craft.",
+  "description": "Alt (rebindable in Controls) + right click on an item: an octagon wheel of everything you can craft from it. Grey means missing resources; hover for the recipe, click to craft.",
   "authors": [
     "BeezzLand"
   ],
